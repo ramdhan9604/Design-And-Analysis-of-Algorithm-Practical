@@ -3,51 +3,51 @@
 using namespace std;
 
 int n = 3;
-int weights[] = {60, 100, 120};
-int profits[] = {10, 20, 30};
-int maxWeight = 50;
+int weights[10] = {10, 20, 30};
+int profits[10] = {60, 100, 120};
+int maxCapacity = 50;
 
 int main() {
-    int currentWeight = maxWeight;
+    int remainingCapacity = maxCapacity;
     float totalValue = 0.0;
-    int used[10] = {0};  // Array to track if an item has been used
+    int used[10] = {0};
 
-    // Continue filling the knapsack until no space is left
-    while (currentWeight > 0) {
-        int maxIndex = -1;
+    while (remainingCapacity > 0) {
+        int selectedItem = -1;
 
         // Find the item with the maximum profit-to-weight ratio
         for (int i = 0; i < n; ++i) {
-            if (used[i] == 0 && (maxIndex == -1 || (float)profits[i] / weights[i] > (float)profits[maxIndex] / weights[maxIndex])) {
-                maxIndex = i;
+            if (used[i] == 0 && (selectedItem == -1 || 
+                (float)profits[i] / weights[i] > (float)profits[selectedItem] / weights[selectedItem])) {
+                selectedItem = i;
             }
         }
 
-        // Mark the selected item as used
-        used[maxIndex] = 1;
-        currentWeight -= weights[maxIndex];
+        used[selectedItem] = 1;
+        remainingCapacity -= weights[selectedItem];
+        totalValue += profits[selectedItem];
 
-        // If the item fits completely in the knapsack
-        if (currentWeight >= 0) {
-            totalValue += profits[maxIndex];
-            cout << "Added object " << maxIndex + 1 << " (weight: " << weights[maxIndex] 
-                 << ", profit: " << profits[maxIndex] << ") completely in the bag. Space left: " 
-                 << currentWeight << "." << endl;
+        if (remainingCapacity >= 0) {
+            cout << "Added object " << selectedItem + 1 << " (" << profits[selectedItem] << ", " << weights[selectedItem]
+                 << ") completely in the bag. Space left: " << remainingCapacity << "." << endl;
         } else {
-            // If only part of the item can be added to the knapsack
-            totalValue += (1 + (float)currentWeight / weights[maxIndex]) * profits[maxIndex];
-            cout << "Added " << (int)((1 + (float)currentWeight / weights[maxIndex]) * 100) 
-                 << "% of object " << maxIndex + 1 << " (weight: " << weights[maxIndex] 
-                 << ", profit: " << profits[maxIndex] << ") in the bag." << endl;
+            int percentage = (int)((1 + (float)remainingCapacity / weights[selectedItem]) * 100);
+            cout << "Added " << percentage << "% of object " << selectedItem + 1 << " (" << profits[selectedItem] 
+                 << ", " << weights[selectedItem] << ") in the bag." << endl;
+
+            totalValue -= profits[selectedItem];
+            totalValue += (1 + (float)remainingCapacity / weights[selectedItem]) * profits[selectedItem];
             break;
         }
     }
 
-    cout << fixed << setprecision(2) << "Filled the bag with objects worth " << totalValue << "." << endl;
+    cout << fixed << setprecision(2) << "Filled the bag of objects worth " << totalValue << "." << endl;
     return 0;
 }
 
 
-// ****************************OUTPUT*****************************
-// Added 41% of object 3 (weight: 120, profit: 30) in the bag.
-// Filled the bag with objects worth 12.50.
+// ********************************OUTPUT*************************
+// Added object 1 (60, 10) completely in the bag. Space left: 40.
+// Added object 2 (100, 20) completely in the bag. Space left: 20.
+// Added 66% of object 3 (120, 30) in the bag.
+// Filled the bag of objects worth 240.00.
