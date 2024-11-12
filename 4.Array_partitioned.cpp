@@ -3,40 +3,48 @@
 #include <iostream>
 using namespace std;
 
-void partition(int arr[], int n, int p, int result[]) {
-    int l = 0;
-    int g = n - 1;
+void partition(int arr[], int low, int high) {
+    int pivot=arr[low];
+    int i=low+1;
+    int j=high;
+    int temp;
 
-    for (int i = 0; i < n; i++) {
-        if (arr[i] < p) {
-            result[l] = arr[i];
-            l=l+1;
-        } else if (arr[i] > p) {
-            result[g] = arr[i];
-            g=g-1;
+    while(i<=j){
+        while(i<=high && arr[i]<=pivot){
+            i=i+1;
         }
+        while(j>=low && arr[j]>=pivot){
+            j=j-1;
+        }
+        if(i<j){
+            temp=arr[i];
+            arr[i]=arr[j];
+            arr[j]=temp;
+        }
+
     }
 
-    // Place the partition element in its correct position
-    result[l] = p;
+    temp=arr[low];
+    arr[low]=arr[j];
+    arr[j]=temp;
 
-    // Print the partitioned array
-    cout << "Partitioned Array: ";
-    for (int i = 0; i < n; i++) {
-        cout << result[i] << " ";
+    cout<<"The partioned array with pivot element index "<<j<< " is: ";
+    for(int i=0;i<=high;i++){
+        cout<<arr[i]<<" ";
     }
-    cout << endl;
 }
-
+    
+   
 int main() {
     int arr[] = {6, 2, 10, 5, 4, 11, 15, 5};
     int size = sizeof(arr) / sizeof(arr[0]);
-    int partitionElement = 6;
-    int result[size];
+    int low=0;
+    int high=size-1;
     
-    partition(arr, size, partitionElement, result);
+    partition(arr, low, high);
     
     return 0;
 }
+
 // ********************************OUTPUT*****************************
 //   Partitioned Array: 2 5 4 5 6 15 11 10
